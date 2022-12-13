@@ -165,7 +165,7 @@ Exploit written at evil
 ```
 
 ### Exploitation
-**IMPORTANT**: pour pouvoir profiter du */bin/bash*, il également """rediriger un autre stdin""" vers le child créé par ``sytem('/bin/bash ...')``. 
+**IMPORTANT**: pour pouvoir profiter du */bin/bash*, il faut également """rediriger un autre stdin""" vers le child créé par ``sytem('/bin/bash ...')``. 
 Pour pouvoir envoyer des commandes au shell:
 ```bash
 faco@archad $ (cat evil; cat) | ./madness
