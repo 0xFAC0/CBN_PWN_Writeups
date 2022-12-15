@@ -1,3 +1,5 @@
-theme: hacker
+remote_theme: pages-themes/hacker@v0.2.0
+plugins:
+  - jekyll-remote-theme
 title: CyberNight 3 write ups
 description: CyberNight CTF pwn challenge write ups
