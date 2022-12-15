@@ -6,8 +6,8 @@
 3. [Functions madness](pwn3/)
 4. [Turducken](pwn4/)
 
-Status | Symbol
----------------
-✓ | Résolut, write up fini
-⚠ | Résolut, write up en cours de rédaction
-❌| Non résolut
+| Symbol | Status                                  |
+|--------|-----------------------------------------|
+|   ✓    | Résolut, write up fini                  |
+|   ⚠    | Résolut, write up en cours de rédaction |
+|   ❌   | Non résolut                             |
