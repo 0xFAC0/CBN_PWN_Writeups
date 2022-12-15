@@ -4,7 +4,7 @@
 1. [Mouais... BOF](pwn1/) ✓
 2. [L'éternel ret](pwn2/) ✓
 3. [Functions madness](pwn3/) ✓
-4. [Turducken](pwn4/) ❌
+4. [Turducken](pwn4/) ⚠
 
 | Symbol | Status                                  |
 |--------|-----------------------------------------|
