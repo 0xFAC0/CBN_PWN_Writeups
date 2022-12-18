@@ -88,7 +88,7 @@ int main() {
 }
 ```
 
-control: ELF executable, 32 bit, pas d'execution depuis la stack mais pas de canary ni de randomisation d'adresse.
+control: ELF exécutable, 32 bit, pas d'exécution depuis la stack mais pas de canary ni de randomisation d'adresse.
 
 ## Analyse du code source control.c
 
@@ -101,7 +101,7 @@ control: ELF executable, 32 bit, pas d'execution depuis la stack mais pas de can
     system("/bin/bash -c 'cat ./flag.txt'");
   }
 ```
-Si ``is_admin == 1``, le programme va executer ``cat ./flag.txt`` en tant que propriétaire du programme: **root**. 
+Si ``is_admin == 1``, le programme va exécuter ``cat ./flag.txt`` en tant que propriétaire du programme: **root**. 
 Le *uid* de *root* possède également le droit de lecture sur le fichier *flag.txt* .
 ```c
 // Mettre à 1 et recompiler pour lancer en mode admin
@@ -111,13 +111,13 @@ int is_admin = 0;
 Cependant ``is_admin`` est déclaré et initialisé dans la fonction `main`, on sait donc que ``is_admin`` sera dans la stack de la fonction `main`.
 
 ### L'overflow
-Le programme lit deux string de l'utilisateur via ``fgets``  et sont alloués dans la stack.
+Le programme lit deux strings de l'utilisateur via ``fgets``  et sont alloués dans la stack.
 ```c
 // User input
   char action[STRING_LEN];
   char distance[STRING_LEN];
 ```
-Le buffer de ces strings sont fixés à 250 char.
+Le buffer de ces strings est fixé à 250 char.
 ```c
 #define STRING_LEN 250
 ```
@@ -129,7 +129,7 @@ Le programme lit 256 char dans un buffer de 250 char ici:
 
 On a donc la possibilité d'écraser 6 char en plus dans la stack.
 6 char ce n'est pas beaucoup, surtout que d'autres valeurs sont entre la *string action* et *$EBP* (le bas de la pile).
-Ce ne sera donc pas assez pour détourner le déroulement du programme en modifiant le valeur de l'adresse de retour de fonction (``[EBP + 4]``).
+Ce ne sera donc pas assez pour détourner le déroulement du programme en modifiant la valeur de l'adresse de retour de fonction (``[EBP + 4]``).
 Par chance ``is_admin`` et ``action[250]`` sont adjacents et un *int* est représenté par 4 bytes.
 
 
@@ -151,7 +151,7 @@ Par chance ``is_admin`` et ``action[250]`` sont adjacents et un *int* est repré
 Il faut maintenant procéder à l'écriture du l'exploit. *fgets* lit *stdin* donc nous allons craft un exploit qui sera pipe vers le programme.
 L'exploit consiste en une suite de 'A' (0x41) puis de ``\x01\x00\x00\x00``  *(attention à la notation little endian !)*
 
-Pour commencer je définis les différentes longueur pour bien segmenter le padding du payload *(ici c'est juste \x01\x00)*
+Pour commencer je définis les différentes longueurs pour bien segmenter le padding du payload *(ici c'est juste \x01\x00)*
 ```c
 #define PADDING_LEN 250 // Le nombre de 'A' à écrire
 #define PADDING_CHAR 0x41 // définir le padding à 'A'
@@ -234,6 +234,6 @@ Victoire !
 
 ## Conclusion
 
-Faire dépendre la sécurité d'une partie d'un programme par une variable compilé est un vecteur pour une escalade d'une faille de type buffer overflow, notamment  dans le cas d'une petites zones écrivable au seins de la stack.
+Faire dépendre la sécurité d'une partie d'un programme par une variable compilée est un vecteur pour une escalade d'une faille de type buffer overflow, notamment  dans le cas d'une petite zone écrivable au sein de la stack.
 
-Ce challenge n'est pas réaliste, ce type de vulnérabilité doit être spécifiquement autorisé à nos compileur moderne pour être compilé. Cependant l'exercice est une très bonne introduction aux challenges binary exploitation pour les personnes souhaitant commencer. 
+Ce challenge n'est pas réaliste, ce type de vulnérabilité doit être spécifiquement autorisé à nos compileurs modernes pour être compilé. Cependant l'exercice est une très bonne introduction aux challenges binary exploitation pour les personnes souhaitant commencer. 
