@@ -1,7 +1,7 @@
 ﻿# Challenge Pwn3 Cybernight write up
 
 ## Description du challenge
-Si vous avez lu les chall précédant, vous avez l'habitude maintenant, un identifiant pour se connecter via SSH nous est fourni:
+Si vous avez lu les chall précédants, vous avez l'habitude maintenant, un identifiant pour se connecter via SSH nous est fourni:
 ```bash
 ssh ctf@10.242.0.1 -p 2227
 passwd: ***
@@ -13,7 +13,7 @@ Et on retrouve les fichiers suivant:
 
 ## Analyse du code source
 
-La première reaction quand on ouvre le code source ![Alt](https://openseauserdata.com/files/08eda6a483276d0eff363de8da6ea23a.jpg =50x50)
+La première réaction quand on ouvre le code source ![Alt](https://openseauserdata.com/files/08eda6a483276d0eff363de8da6ea23a.jpg =50x50)
 ```c
 int BIGFvBgYnMlYOKia(int ANzzGdmd) {
     int X = 119;
@@ -37,7 +37,7 @@ int AdMbWtzSbOkVliGR(int pHlzcMIH) {
 }
 // [...]
 ```
-On a affaire à un code obfusqué, mais comme on a le source code (dommage), une simple recherche dans le texte comme "system" ou "getuid" nous ramène directement à la fonction qui nous donnera le flag
+On a affaire à un code obfusqué, mais comme on a le code source (dommage), une simple recherche dans le texte comme "system" ou "getuid" nous ramène directement à la fonction qui nous donnera le flag
 
 ```bash
 faco@archad $ cat madness.c | grep -C 3 system
@@ -52,7 +52,7 @@ On devine donc rapidement que le chall sera de détourner l’exécution du prog
 
 On a notre objectif, maintenant il nous faut un vecteur.
 Cherchons une entrée/interaction utilisateur.
-Par chance, à la fin du fichier se trouve notre fonction ``main`` et on peut voir qu'elle appelle la function ``bMTsWWvxFNorimkF``:
+Par chance, à la fin du fichier se trouve notre fonction ``main`` et on peut voir qu'elle appelle la fonction ``bMTsWWvxFNorimkF``:
 ```c
 void bMTsWWvxFNorimkF() {
     char number[11] = {0};
@@ -71,7 +71,7 @@ Le vecteur est vite trouvé, on a un buffer de taille 11 qui est rempli par la f
 
 ## Exploitation
 
-Comme il a été vu précédement, notre objectif est de faire sauter l'execution du programme vers la fonction ```SpYhDmDKENhhkOlH```.
+Comme il a été vu précédement, notre objectif est de faire sauter l'exécution du programme vers la fonction ```SpYhDmDKENhhkOlH```.
 La méthode est la même que pour le chall 2:
 - Récuperer l'adresse de la fonction cible
 - Déterminer le padding, ici on veut que notre payload modifie l'adresse de retour de fonction (toujours **[EBP+4]** dans la stack)
@@ -79,7 +79,7 @@ La méthode est la même que pour le chall 2:
 
 ### Récupérer l'adresse de la fonction cible
 
-Pour récupérer l'adresse de votre fonction, j'utilise ``objdump -t`` pipé dans ``grep`` pour chercher au seins de la liste des symboles de l’exécutable
+Pour récupérer l'adresse de votre fonction, j'utilise ``objdump -t`` pipé dans ``grep`` pour chercher au sein de la liste des symboles de l’exécutable
  ```bash
  faco@archad $ objdump -t ./madness | grep SpYhDmDKENhhkOlH
  0804978b g     F .text  00000047              SpYhDmDKENhhkOlH
@@ -116,7 +116,7 @@ J'ouvre le programme *madness* dans gdb et je commence par désassembler la fonc
    On place un breakpoint sur ``*bMTsWWvxFNorimkF+71`` (*0x0804a027*). 
    Le breakpoint nous permettera d'avoir la stack juste avant l'overflow, ainsi on pourra déterminer la taille de notre padding afin d'atteindre l'offset **[EBP+4]**.
 
-Une fois le programme lancé on hit directement le breakpoint avant l'execution de ``gets``.
+Une fois le programme lancé on hit directement le breakpoint avant l'exécution de ``gets``.
 J'affiche 20 WORD en hexadécimale depuis $ESP (le haut de la stack)
 ```
 Breakpoint 1, 0x0804a027 in bMTsWWvxFNorimkF ()
