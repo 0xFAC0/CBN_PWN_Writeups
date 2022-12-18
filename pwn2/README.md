@@ -59,22 +59,22 @@ int main() {
     return 0;
 }
 ```
-Le programme **lit un nombre indéfini de character avec scanf** depuis stdin et store la l'entrée dans le buffer *char\* action[**250**]*
-On observe une fonction  *admin_panel* qui lit *flag.txt*, mais la fonction n'est pas jamais appelé.
+Le programme **lit un nombre indéfini de character avec scanf** depuis stdin et store l'entrée dans le buffer *char\* action[**250**]*
+On observe une fonction  *admin_panel* qui lit *flag.txt*, mais la fonction n'est jamais appelée.
 ## Exploitation
-La fonction *scanf* enregistrant un nombre indéfini de character sera notre le point d'entrée pour exploiter une faille buffer overflow sur le buffer *action*.
+La fonction *scanf* enregistrant un nombre indéfini de character sera notre point d'entrée pour exploiter une faille buffer overflow sur le buffer *action*.
 Pour récuperer le flag, notre buffer overflow devra rediriger le programme vers la fonction *admin_panel*.
 
 ### Comment rediriger l'execution d'un programme depuis la stack ??
-Tout d'abord il faut comprendre ce qu'il se passe lorsque l'intruction ``call fnc`` en assembleur est executé.
+Tout d'abord il faut comprendre ce qu'il se passe lorsque l'introduction ``call fnc`` en assembleur est executée.
 
-Lorsqu'une fonction est appelé, ses arguments sont poussés sur la stack dans l'ordre inverse (programme 32bit) ou les arguments sont passés par les registres (programme 64bit).
+Lorsqu'une fonction est appelée, ses arguments sont poussés sur la stack dans l'ordre inverse (programme 32bit) ou les arguments sont passés par les registres (programme 64bit).
 
-La valeur de EIP (registre contenant l'adresse de l'instruction à executer, le déroulement du programme) est *push* sur le haut de la stack avant le prélude de la fonction appelé.
+La valeur de EIP (registre contenant l'adresse de l'instruction à executer, le déroulement du programme) est *push* sur le haut de la stack avant le prélude de la fonction appelée.
 
-Donc la valeur avant EBP (le bas de la stack de la fonction en cours d'execution) est l'adresse à que EIP prendra lorsque la fonction retournera.
+Donc la valeur avant EBP (le bas de la stack de la fonction en cours d'exécution) est l'adresse que EIP prendra lorsque la fonction retournera.
 
-Alors si on modifie [EBP + 4] (la stack va des adresses hautes, vers les adresses basse, d'où le *+*), on fera sauter l'execution de notre programme à l'adresse modifié lorsque la fonction sera terminé.
+Alors si on modifie [EBP + 4] (la stack va des adresses hautes, vers les adresses basses, d'où le *+*), on fera sauter l'exécution de notre programme à l'adresse modifiée lorsque la fonction sera terminée.
 | STACK: | Size in byte |
 ---------|-------|
 | [...] | [...] |
@@ -89,8 +89,8 @@ Il faut donc écrire l'adresse à laquelle nous voulons rediriger le programme: 
 Tout comme pour le premier challenge de pwn, je vais écrire un programme en *C* qui écrira notre buffer malvaillant dans un fichier. Il ne restera plus qu'à pipe l'exploit au programme.
 
 ### Définition des valeurs
-Il faut commencer par savoir à quel adresse sauté, on a pas de soucis à directement la récupérer dans la liste de symbol et de l'hardcoder dans l'exploit car il n'y a pas de randomisation d'adresse.
-On récupère l'adresse des symbols avec ``objdump -t ./bin``.
+Il faut commencer par savoir à quelle adresse sauter, on a pas de soucis à directement la récupérer dans la liste de symbole et de l'hardcoder dans l'exploit car il n'y a pas de randomisation d'adresse.
+On récupère l'adresse des symboles avec ``objdump -t ./bin``.
 ```bash
  faco@archad $ objdump -t ./control | grep admin
 08049379 g     F .text  00000059              admin_panel
