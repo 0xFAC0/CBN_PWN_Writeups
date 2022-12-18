@@ -66,7 +66,7 @@ La fonction *scanf* enregistrant un nombre indéfini de character sera notre poi
 Pour récuperer le flag, notre buffer overflow devra rediriger le programme vers la fonction *admin_panel*.
 
 ### Comment rediriger l'execution d'un programme depuis la stack ??
-Tout d'abord il faut comprendre ce qu'il se passe lorsque l'introduction ``call fnc`` en assembleur est executée.
+Tout d'abord il faut comprendre ce qu'il se passe lorsque l'instruction ``call fnc`` en assembleur est executée.
 
 Lorsqu'une fonction est appelée, ses arguments sont poussés sur la stack dans l'ordre inverse (programme 32bit) ou les arguments sont passés par les registres (programme 64bit).
 
